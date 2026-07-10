@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Plus, Archive, ArchiveRestore } from 'lucide-react'
+import { Plus, Archive, ArchiveRestore, Trash2 } from 'lucide-react'
 import { useApp } from '../../App.jsx'
 import InlineEdit from './InlineEdit.jsx'
 
@@ -22,7 +22,7 @@ export default function TableTab({ selectedId, setSelectedId }) {
   const {
     currentScreen, iaStatus, iaScreens, iaFeatureList, iaFlashId,
     hoveredFuncId, setReverseFuncId,
-    updateFeatureField, addFeature, archiveFeature, addMemo, iaMemos,
+    updateFeatureField, addFeature, archiveFeature, addMemo, confirmMemo, deleteMemo, iaMemos,
     showToast, author,
   } = useApp()
 
@@ -122,7 +122,7 @@ export default function TableTab({ selectedId, setSelectedId }) {
         {rows.map((f) => {
           const selected = selectedId === f.id
           const hot = hoveredFuncId === f.id
-          const rowMemos = selected ? iaMemos.filter((m) => m.target_id === f.id).slice(0, 2) : []
+          const rowMemos = selected ? iaMemos.filter((m) => m.target_id === f.id && !m.deleted).slice(0, 2) : []
           if (f.archived && !selected) {
             return (
               <div key={f.id} data-row={f.id} className="ia-row is-archived" onClick={() => setSelectedId(f.id)}>
@@ -175,8 +175,29 @@ export default function TableTab({ selectedId, setSelectedId }) {
                   <div className="ia-detail-field">
                     <span className="t-micro ia-detail-label">메모 스레드</span>
                     {rowMemos.map((m) => (
-                      <div className="ia-memo-line t-caption" key={m.id}>
-                        <b>{m.author}</b> {m.body}
+                      <div className={`ia-memo-line t-caption${m.confirmed ? ' is-confirmed' : ''}`} key={m.id}>
+                        <b>{m.author}</b>
+                        <span className="ia-memo-body">{m.body}</span>
+                        <label className="memo-confirm t-micro">
+                          <input
+                            type="checkbox"
+                            checked={!!m.confirmed}
+                            disabled={readOnly}
+                            onChange={async () => { const { error } = await confirmMemo(m.id, !m.confirmed); if (error) showToast(error) }}
+                          />
+                          확인
+                        </label>
+                        <button
+                          className="icon-mini"
+                          aria-label="메모 삭제"
+                          disabled={readOnly}
+                          onClick={async () => {
+                            const { error } = await deleteMemo(m.id, m.body)
+                            showToast(error ?? '메모를 숨겼어요 (기록은 히스토리에 보존)')
+                          }}
+                        >
+                          <Trash2 size={12} strokeWidth={1.8} />
+                        </button>
                       </div>
                     ))}
                     <div className="ia-memo-compose">

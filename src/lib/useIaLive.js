@@ -23,6 +23,7 @@ const FIELD_LABELS = {
   milestone: '마일스톤', name: '명칭', importance: '중요도', memo: '메모',
   purpose: '목적', copy: 'UX카피', nav: '연결', flags: '이슈', note: '비고',
   archived: '보관', created: '생성', memo_thread: '메모글',
+  memo_confirmed: '메모확인', memo_deleted: '메모삭제',
 }
 export const fieldLabel = (f) => FIELD_LABELS[f] ?? f
 
@@ -88,10 +89,14 @@ export default function useIaLive(showToast) {
             setFlashId(p.new.id)
             setTimeout(() => setFlashId((f) => (f === p.new.id ? null : f)), 1000)
           })
-          .on('postgres_changes', { event: 'insert', schema: 'public', table: 'ia_memos' }, (p) => {
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'ia_memos' }, (p) => {
             if (!p.new?.id) return
-            setMemos((prev) => (prev.some((m) => m.id === p.new.id) ? prev : [p.new, ...prev]))
-            if (p.new.author !== authorRef.current) {
+            setMemos((prev) => {
+              const exists = prev.some((m) => m.id === p.new.id)
+              return exists ? prev.map((m) => (m.id === p.new.id ? p.new : m)) : [p.new, ...prev]
+            })
+            // 새 메모(INSERT)만 알림 — 확인/삭제(UPDATE)는 change_log 토스트로 전달
+            if (p.eventType === 'INSERT' && !p.new.deleted && p.new.author !== authorRef.current) {
               setUnseenMemos((n) => n + 1)
               showToastRef.current?.(`${p.new.author}: ${p.new.target_id}에 메모를 남겼어요`)
             }
@@ -187,6 +192,25 @@ export default function useIaLive(showToast) {
     return {}
   }, [live, logChange])
 
+  // ── 메모 확인 체크 / 소프트 삭제 (기록 보존 — deleted 플래그로 숨김) ──
+  const patchMemo = useCallback(async (memoId, patch, logField, oldValue, newValue) => {
+    if (!live) return { error: '오프라인 — 읽기 전용이에요' }
+    const { data, error } = await supabase.from('ia_memos').update(patch).eq('id', memoId).select().single()
+    if (error) return { error: `저장 실패: ${error.message} — scripts/schema_v2_1_memos.sql 실행 여부 확인` }
+    setMemos((prev) => prev.map((m) => (m.id === memoId ? data : m)))
+    await logChange(data.target_id, logField, oldValue, newValue)
+    return {}
+  }, [live, logChange])
+
+  const confirmMemo = useCallback(
+    (memoId, confirmed) => patchMemo(memoId, { confirmed }, 'memo_confirmed', String(!confirmed), String(confirmed)),
+    [patchMemo]
+  )
+  const deleteMemo = useCallback(
+    (memoId, body) => patchMemo(memoId, { deleted: true }, 'memo_deleted', (body ?? '').slice(0, 40), null),
+    [patchMemo]
+  )
+
   const markMemosSeen = useCallback(() => setUnseenMemos(0), [])
 
   const featureList = useMemo(
@@ -198,6 +222,6 @@ export default function useIaLive(showToast) {
     iaStatus: status, iaScreens: screens, iaFeatures: features, iaFeatureList: featureList,
     iaMemos: memos, iaChangeLog: changeLog, iaFlashId: flashId,
     author, setAuthor, unseenMemos, markMemosSeen,
-    updateFeatureField, addFeature, archiveFeature, addMemo,
+    updateFeatureField, addFeature, archiveFeature, addMemo, confirmMemo, deleteMemo,
   }
 }

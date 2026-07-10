@@ -464,6 +464,33 @@ input, textarea { font: inherit; }
 }
 .ia-id-chip:hover { border-color: var(--border-focus); color: var(--text-primary); }
 
+/* 메모 확인 체크 + 삭제 */
+.memo-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.memo-confirm input { accent-color: var(--main-primary); width: 13px; height: 13px; }
+.icon-mini {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
+  color: var(--text-tertiary);
+  flex: none;
+}
+.icon-mini:hover:not(:disabled) { color: var(--status-danger); background: var(--grade-bad-bg); }
+.icon-mini:disabled { opacity: 0.4; cursor: default; }
+.ia-stream-row.is-confirmed p { color: var(--text-tertiary); }
+.ia-memo-line { display: flex; align-items: center; gap: 6px; }
+.ia-memo-line .ia-memo-body { flex: 1; min-width: 0; }
+.ia-memo-line.is-confirmed .ia-memo-body { color: var(--text-tertiary); }
+
 .ms-flag.later { background: var(--bg-disabled); color: var(--text-tertiary); }
 
 /* ── 패널 하단 리뷰 도구 (렌즈 + 데모 스위치, 스펙 §7·§8-4) ── */

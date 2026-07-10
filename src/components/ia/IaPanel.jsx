@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Download } from 'lucide-react'
 import { useApp } from '../../App.jsx'
+import { ROLES } from '../../lib/useIaLive.js'
 import MilestoneLens from '../MilestoneLens.jsx'
+import MsAggregate from './MsAggregate.jsx'
 import TableTab from './TableTab.jsx'
 import MemoTab from './MemoTab.jsx'
 import HistoryTab from './HistoryTab.jsx'
 
 // ─────────────────────────────────────────────
-// 라이브 IA 테이블 패널 (스펙 v2 §3) — v1 인스펙터 대체, 폭 480px
-// 헤더: "IA Live · v2" + 연결 상태 점 + 작성자 칩 + CSV 내보내기
-// 하단 탭: 테이블 | 메모 | 히스토리 · 최하단: 렌즈·데모 스위치(승계)
+// 라이브 IA 테이블 패널 (스펙 v2 §3 + v2.1) — 폭 fill
+// 헤더: "IA Live" + 연결 점 + 작성자 칩(역할 3종) + CSV
+// 하단: 탭 3 · 마일스톤 집계(§5) · 렌즈/데모 스위치
 // ─────────────────────────────────────────────
-const AUTHORS = ['정주', '대표', '게스트']
-
 const toCsv = (rows, columns) => {
   const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`
   return [columns.join(','), ...rows.map((r) => columns.map((c) => esc(r[c])).join(','))].join('\n')
@@ -29,18 +29,46 @@ export default function IaPanel() {
   const {
     iaStatus, author, setAuthor, unseenMemos,
     iaFeatureList, iaScreens, showToast,
+    currentScreen, lens, demoEmpty, demoError,
   } = useApp()
-  const [tab, setTab] = useState('table')          // 'table' | 'memo' | 'history'
-  const [selectedId, setSelectedId] = useState(null) // 행 선택 고정
+  const [tab, setTab] = useState('table')
+  const [selectedId, setSelectedId] = useState(null)
   const [pickingAuthor, setPickingAuthor] = useState(false)
+  // 테이블 필터 (v2.1: scope 'screen'|'all'|'area:…' + milestone 버킷) — scope는 도구 설정으로 유지
+  const [filter, setFilter] = useState(() => ({
+    scope: localStorage.getItem('hotam_ia_showall') === '1' ? 'all' : 'screen',
+    milestone: null,
+  }))
+  useEffect(() => {
+    localStorage.setItem('hotam_ia_showall', filter.scope === 'all' ? '1' : '0')
+  }, [filter.scope])
 
-  // 메모/히스토리에서 ID 칩 클릭 → 테이블 해당 행으로 점프
+  // §4 미구현 동적 판정: 프레임 DOM의 data-func-id 스캔.
+  // MutationObserver로 화면 내 상태 변화(탭·검색 결과 등)에도 추종 — 하드코딩 목록 없음.
+  const [implementedIds, setImplementedIds] = useState(() => new Set())
+  useEffect(() => {
+    const frame = document.querySelector('.frame')
+    if (!frame) return
+    let timer = null
+    const scan = () => {
+      const next = new Set([...frame.querySelectorAll('[data-func-id]')].map((el) => el.dataset.funcId))
+      setImplementedIds((prev) => {
+        if (prev.size === next.size && [...next].every((id) => prev.has(id))) return prev
+        return next
+      })
+    }
+    const debounced = () => { clearTimeout(timer); timer = setTimeout(scan, 250) }
+    debounced()
+    const mo = new MutationObserver(debounced)
+    mo.observe(frame, { childList: true, subtree: true })
+    return () => { mo.disconnect(); clearTimeout(timer) }
+  }, [currentScreen, lens, demoEmpty, demoError])
+
   const jumpTo = (targetId) => {
     setTab('table')
     setSelectedId(targetId)
   }
 
-  // CSV 내보내기 — 현재 Supabase 상태 전체 (features + screens 2개 파일)
   const exportCsv = () => {
     const today = new Date().toISOString().slice(0, 10)
     const fCols = ['id', 'screen', 'area', 'screen_name', 'name', 'label', 'type', 'purpose',
@@ -51,17 +79,16 @@ export default function IaPanel() {
     showToast('CSV 2개(기능·화면)를 내려받았어요')
   }
 
-  // 첫 진입: 작성자 이름 선택 게이트
   const needAuthor = !author || pickingAuthor
 
   return (
     <aside className="inspector ia-panel">
       <header className="insp-header">
         <span className={`ia-conn-dot ${iaStatus}`} title={iaStatus === 'live' ? '실시간 연결됨' : '오프라인'} />
-        <span className="t-caption">IA Live · v2</span>
+        <span className="t-caption">IA Live · v2.1</span>
         <span className="spacer" />
-        <button className="ia-author-chip t-micro" onClick={() => setPickingAuthor(true)} title="작성자 변경">
-          {author || '작성자?'}
+        <button className="ia-author-chip t-micro" onClick={() => setPickingAuthor(true)} title="역할 변경">
+          {author || '역할 선택'}
         </button>
         <button className="ia-tool-btn" onClick={exportCsv} title="CSV 내보내기">
           <Download size={13} /> CSV
@@ -77,10 +104,10 @@ export default function IaPanel() {
 
       {needAuthor ? (
         <div className="ia-author-gate">
-          <p className="t-heading-sm">누구로 참여하세요?</p>
-          <p className="t-caption" style={{ color: 'var(--text-secondary)' }}>편집·메모에 이 이름이 기록돼요</p>
+          <p className="t-heading-sm">어떤 역할로 참여하세요?</p>
+          <p className="t-caption" style={{ color: 'var(--text-secondary)' }}>편집·메모에 이 역할이 기록돼요</p>
           <div className="ia-author-options">
-            {AUTHORS.map((n) => (
+            {ROLES.map((n) => (
               <button
                 key={n}
                 className={`btn btn-secondary${author === n ? ' is-current' : ''}`}
@@ -94,12 +121,17 @@ export default function IaPanel() {
       ) : (
         <>
           <div className="ia-content">
-            {tab === 'table' && <TableTab selectedId={selectedId} setSelectedId={setSelectedId} />}
+            {tab === 'table' && (
+              <TableTab
+                selectedId={selectedId} setSelectedId={setSelectedId}
+                filter={filter} setFilter={setFilter}
+                implementedIds={implementedIds}
+              />
+            )}
             {tab === 'memo' && <MemoTab onJump={jumpTo} />}
             {tab === 'history' && <HistoryTab onJump={jumpTo} />}
           </div>
 
-          {/* 하단 탭 3개 (스펙 §3) */}
           <div className="ia-tabs">
             <button className={`ia-tab${tab === 'table' ? ' is-active' : ''}`} onClick={() => setTab('table')}>
               테이블
@@ -115,8 +147,9 @@ export default function IaPanel() {
         </>
       )}
 
-      {/* 렌즈·데모 스위치 (v1 승계) */}
+      {/* 렌즈·데모 스위치 + 마일스톤 집계 (v2.1 §5 — 렌즈 바로 아래) */}
       <MilestoneLens />
+      {!needAuthor && <MsAggregate setFilter={setFilter} setTab={setTab} implementedIds={implementedIds} />}
     </aside>
   )
 }

@@ -10,6 +10,8 @@
   --grade-soso:#26422A; --grade-soso-bg:#EAF0EB;
   --grade-bad:#6B7478;  --grade-bad-bg:#EEF1F2;
   --status-success:#2E7D46; --status-danger:#C62828; --status-info:#1565C0;
+  /* status +bg (design_tokens.md §3 status(+bg) 대응 — v2.1 §2 메모 태그용. 구체값 [추정], Figma export 시 갱신) */
+  --status-danger-bg:#FBEBEA; --status-info-bg:#E8F0FB;
   --overlay-scrim:rgba(14,14,14,.6); --shadow-sm:0 1px 8px rgba(14,14,14,.08); --shadow-lg:0 4px 16px rgba(14,14,14,.12);
   /* layout */
   --sp-xxs:4px; --sp-xs:8px; --sp-sm:12px; --sp-md:16px; --sp-lg:24px; --sp-xl:32px; --sp-page:20px;

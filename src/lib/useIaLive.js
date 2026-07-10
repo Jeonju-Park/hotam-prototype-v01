@@ -24,8 +24,24 @@ const FIELD_LABELS = {
   purpose: '목적', copy: 'UX카피', nav: '연결', flags: '이슈', note: '비고',
   archived: '보관', created: '생성', memo_thread: '메모글',
   memo_confirmed: '메모확인', memo_deleted: '메모삭제',
+  memo_resolved: '메모해결', memo_comment: '댓글',
 }
 export const fieldLabel = (f) => FIELD_LABELS[f] ?? f
+
+// 역할명 (스펙 v2.1 §3) — 과거 author 값은 표시 시 매핑(DB 원본 불변)
+export const ROLES = ['기획자(정주)', '결정권자(대표)', '개발']
+const AUTHOR_MAP = { '정주': '기획자(정주)', '대표': '결정권자(대표)', '게스트': '개발' }
+export const mapAuthor = (a) => AUTHOR_MAP[a] ?? a
+
+// 마일스톤 문자열 → 버킷 (집계·필터 공용)
+export const msBucket = (ms) => {
+  if (!ms) return 'M1'
+  if (/결정대기/.test(ms)) return '결정대기'
+  if (/later/i.test(ms)) return 'Later'
+  if (/M3/.test(ms)) return 'M3'
+  if (/M2/.test(ms)) return 'M2'
+  return 'M1'
+}
 
 export default function useIaLive(showToast) {
   const [status, setStatus] = useState('connecting') // 'connecting' | 'live' | 'offline'
@@ -36,8 +52,15 @@ export default function useIaLive(showToast) {
   const [flashId, setFlashId] = useState(null)    // 원격 변경 행 1초 플래시
   const [unseenMemos, setUnseenMemos] = useState(0)
 
-  // 작성자 — 도구 설정이므로 localStorage 허용
-  const [author, setAuthorState] = useState(() => localStorage.getItem('hotam_ia_author') || '')
+  const [memoComments, setMemoComments] = useState([])
+
+  // 작성자 — 도구 설정이므로 localStorage 허용. 구 역할명은 신규 명칭으로 이관(§3)
+  const [author, setAuthorState] = useState(() => {
+    const stored = localStorage.getItem('hotam_ia_author') || ''
+    const mapped = AUTHOR_MAP[stored] ?? stored
+    if (mapped !== stored) localStorage.setItem('hotam_ia_author', mapped)
+    return mapped
+  })
   const authorRef = useRef(author)
   const setAuthor = useCallback((name) => {
     authorRef.current = name
@@ -77,6 +100,10 @@ export default function useIaLive(showToast) {
         setChangeLog(cl.data)
         setStatus('live')
 
+        // 댓글은 비치명적 로드 (v2.1 마이그레이션 전이면 조용히 생략)
+        const cm = await supabase.from('ia_memo_comments').select('*').order('created_at')
+        if (!cm.error && !cancelled) setMemoComments(cm.data)
+
         // Realtime — 4개 테이블 단일 채널
         channel = supabase
           .channel('ia-live')
@@ -98,16 +125,24 @@ export default function useIaLive(showToast) {
             // 새 메모(INSERT)만 알림 — 확인/삭제(UPDATE)는 change_log 토스트로 전달
             if (p.eventType === 'INSERT' && !p.new.deleted && p.new.author !== authorRef.current) {
               setUnseenMemos((n) => n + 1)
-              showToastRef.current?.(`${p.new.author}: ${p.new.target_id}에 메모를 남겼어요`)
+              showToastRef.current?.(`${mapAuthor(p.new.author)}: ${p.new.target_id || '전체'}에 메모를 남겼어요`)
+            }
+          })
+          .on('postgres_changes', { event: 'insert', schema: 'public', table: 'ia_memo_comments' }, (p) => {
+            if (!p.new?.id) return
+            setMemoComments((prev) => (prev.some((c) => c.id === p.new.id) ? prev : [...prev, p.new]))
+            if (p.new.author !== authorRef.current) {
+              setUnseenMemos((n) => n + 1)
+              showToastRef.current?.(`${mapAuthor(p.new.author)}: 메모에 댓글을 남겼어요`)
             }
           })
           .on('postgres_changes', { event: 'insert', schema: 'public', table: 'ia_change_log' }, (p) => {
             if (!p.new?.id) return
             setChangeLog((prev) => (prev.some((c) => c.id === p.new.id) ? prev : [p.new, ...prev]))
-            // 원격 변경 토스트: "대표: HTM-S7-15 마일스톤 M2→M3"
-            if (p.new.author !== authorRef.current && p.new.field !== 'memo_thread') {
+            // 원격 변경 토스트: "결정권자(대표): HTM-S7-15 마일스톤 M2→M3"
+            if (p.new.author !== authorRef.current && !['memo_thread', 'memo_comment'].includes(p.new.field)) {
               showToastRef.current?.(
-                `${p.new.author}: ${p.new.target_id} ${fieldLabel(p.new.field)} ${p.new.old_value ?? ''}→${p.new.new_value ?? ''}`
+                `${mapAuthor(p.new.author)}: ${p.new.target_id} ${fieldLabel(p.new.field)} ${p.new.old_value ?? ''}→${p.new.new_value ?? ''}`
               )
             }
           })
@@ -181,14 +216,40 @@ export default function useIaLive(showToast) {
     [updateFeatureField]
   )
 
-  // ── 메모 스레드 작성 ──
-  const addMemo = useCallback(async (targetId, body) => {
+  // ── 화면(SCREENS) 필드 수정 — v2.1 §1: 화면도 편집 대상 ──
+  const updateScreenField = useCallback(async (id, field, value) => {
     if (!live) return { error: '오프라인 — 읽기 전용이에요' }
-    const row = { target_id: targetId, author: authorRef.current || '게스트', body }
+    const old = screens[id]?.[field] ?? ''
+    if (String(old) === String(value)) return {}
+    setScreens((prev) => ({ ...prev, [id]: { ...prev[id], [field]: value } }))
+    const { error } = await supabase.from('ia_screens').update({ [field]: value }).eq('id', id)
+    if (error) {
+      setScreens((prev) => ({ ...prev, [id]: { ...prev[id], [field]: old } }))
+      return { error: `저장 실패: ${error.message}` }
+    }
+    await logChange(id, field, old, value)
+    return {}
+  }, [live, screens, logChange])
+
+  // ── 메모 스레드 작성 (v2.1: tag 4종 — 이슈/QA/기능/화면) ──
+  const addMemo = useCallback(async (targetId, body, tag = '기능') => {
+    if (!live) return { error: '오프라인 — 읽기 전용이에요' }
+    const row = { target_id: targetId ?? '', author: authorRef.current || '개발', body, tag }
     const { data, error } = await supabase.from('ia_memos').insert(row).select().single()
     if (error) return { error: `메모 실패: ${error.message}` }
     setMemos((prev) => (prev.some((m) => m.id === data.id) ? prev : [data, ...prev]))
-    await logChange(targetId, 'memo_thread', null, body.slice(0, 40))
+    await logChange(targetId || '(전체)', 'memo_thread', null, body.slice(0, 40))
+    return {}
+  }, [live, logChange])
+
+  // ── 메모 댓글 (v2.1 §2 — ia_memo_comments) ──
+  const addMemoComment = useCallback(async (memoId, targetId, body) => {
+    if (!live) return { error: '오프라인 — 읽기 전용이에요' }
+    const row = { memo_id: memoId, author: authorRef.current || '개발', body }
+    const { data, error } = await supabase.from('ia_memo_comments').insert(row).select().single()
+    if (error) return { error: `댓글 실패: ${error.message} — scripts/schema_v2_2_memos.sql 실행 여부 확인` }
+    setMemoComments((prev) => (prev.some((c) => c.id === data.id) ? prev : [...prev, data]))
+    await logChange(targetId || '(메모)', 'memo_comment', null, body.slice(0, 40))
     return {}
   }, [live, logChange])
 
@@ -210,6 +271,11 @@ export default function useIaLive(showToast) {
     (memoId, body) => patchMemo(memoId, { deleted: true }, 'memo_deleted', (body ?? '').slice(0, 40), null),
     [patchMemo]
   )
+  // 메모 해결 처리 (이슈 소통 완료 — v2.1 §2)
+  const resolveMemo = useCallback(
+    (memoId, resolved) => patchMemo(memoId, { resolved }, 'memo_resolved', String(!resolved), String(resolved)),
+    [patchMemo]
+  )
 
   const markMemosSeen = useCallback(() => setUnseenMemos(0), [])
 
@@ -220,8 +286,9 @@ export default function useIaLive(showToast) {
 
   return {
     iaStatus: status, iaScreens: screens, iaFeatures: features, iaFeatureList: featureList,
-    iaMemos: memos, iaChangeLog: changeLog, iaFlashId: flashId,
+    iaMemos: memos, iaMemoComments: memoComments, iaChangeLog: changeLog, iaFlashId: flashId,
     author, setAuthor, unseenMemos, markMemosSeen,
-    updateFeatureField, addFeature, archiveFeature, addMemo, confirmMemo, deleteMemo,
+    updateFeatureField, updateScreenField, addFeature, archiveFeature,
+    addMemo, confirmMemo, deleteMemo, resolveMemo, addMemoComment,
   }
 }

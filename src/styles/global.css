@@ -493,6 +493,145 @@ input, textarea { font: inherit; }
 
 .ms-flag.later { background: var(--bg-disabled); color: var(--text-tertiary); }
 
+/* ── v2.1 §1: 화면 카드 · 브레드크럼 · ID 칩 ── */
+.screen-card {
+  flex: none;
+  margin: var(--sp-xs) var(--sp-sm) 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-md);
+  padding: var(--sp-xs) var(--sp-sm);
+}
+.screen-card-main { width: 100%; display: flex; align-items: center; gap: 6px; min-height: 30px; text-align: left; }
+.screen-card-main .spacer { flex: 1; }
+.screen-card-purpose { color: var(--text-secondary); padding: 2px 0 4px; }
+.screen-detail { margin: 0 calc(-1 * var(--sp-sm)) calc(-1 * var(--sp-xs)); border-radius: 0 0 var(--r-md) var(--r-md); }
+.type-chip {
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.breadcrumb { display: flex; align-items: center; gap: 4px; color: var(--text-tertiary); flex-wrap: wrap; }
+.crumb { color: var(--text-secondary); padding: 2px 2px; border-radius: var(--r-sm); }
+.crumb:hover { color: var(--text-primary); background: var(--bg-default); }
+.crumb.is-current { color: var(--text-primary); font-weight: 600; cursor: default; }
+.crumb-sep { color: var(--text-tertiary); }
+.ia-id-chip.is-screen { background: var(--grade-soso-bg); color: var(--grade-soso); border-color: transparent; font-weight: 600; }
+.nav-cell { min-height: 22px; }
+.nav-cell.is-editable:hover { outline: 1px dashed var(--border-default); outline-offset: 1px; }
+.nav-chips { display: inline-flex; flex-wrap: wrap; gap: 2px; align-items: center; font-size: 12px; }
+
+/* ── v2.1 §4: 미구현 ── */
+.unimpl-badge {
+  display: inline-block;
+  margin-right: 4px;
+  padding: 0 4px;
+  border-radius: var(--r-sm);
+  background: var(--bg-disabled);
+  color: var(--text-tertiary);
+  font-size: 10px;
+  font-weight: 600;
+}
+.ia-row.is-unimpl .inline-cell, .ia-row.is-unimpl .ia-id { color: var(--text-tertiary); }
+
+/* ── v2.1 §2: 메모 태그 · 폼 · 댓글 ── */
+.memo-tag {
+  padding: 1px 8px;
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.memo-tag.tag-issue { background: var(--status-danger-bg); color: var(--status-danger); }
+.memo-tag.tag-qa { background: var(--status-info-bg); color: var(--status-info); }
+.memo-tag.tag-func, .memo-tag.tag-screen { background: var(--grade-soso-bg); color: var(--grade-soso); }
+.memo-tag.is-on { border-color: currentColor; }
+
+.memo-compose-form {
+  margin: 0 var(--sp-sm) var(--sp-xs);
+  padding: var(--sp-xs);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-md);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-default);
+}
+.autocomplete {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 8px;
+  text-align: left;
+}
+.autocomplete-item:hover { background: var(--bg-default); }
+
+.memo-actions { display: flex; align-items: center; gap: var(--sp-xs); }
+.memo-actions .spacer { flex: 1; }
+.memo-resolve {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+}
+.memo-resolve.is-on { background: var(--grade-soso-bg); color: var(--status-success); border-color: transparent; }
+.ia-stream-row.is-resolved p { color: var(--text-tertiary); text-decoration: line-through; }
+.memo-comments {
+  margin-top: 4px;
+  padding: var(--sp-xs);
+  background: var(--bg-default);
+  border-radius: var(--r-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.memo-comment { display: flex; gap: 6px; align-items: baseline; }
+.memo-comment .ia-memo-body { flex: 1; }
+
+/* ── v2.1 §5: 마일스톤 집계 ── */
+.ms-agg {
+  flex: none;
+  border-top: 1px solid var(--border-default);
+  padding: var(--sp-xs) var(--sp-md) var(--sp-sm);
+  background: var(--bg-default);
+}
+.ms-agg-head { display: flex; align-items: center; gap: var(--sp-xs); margin-bottom: 4px; }
+.ms-agg-head .spacer { flex: 1; }
+.ms-agg-head .lens-seg button { padding: 3px 4px; font-size: 11px; }
+.ms-agg-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 20px;
+  border-radius: var(--r-sm);
+  padding: 1px 4px;
+}
+.ms-agg-row:hover { background: var(--bg-disabled); }
+.ms-agg-label { width: 52px; text-align: left; color: var(--text-secondary); flex: none; }
+.ms-agg-track { flex: 1; height: 6px; border-radius: var(--r-sm); background: var(--bg-disabled); overflow: hidden; }
+.ms-agg-fill { display: block; height: 100%; background: var(--text-primary); } /* 잉크 계열 — 오렌지 금지 */
+.ms-agg-num { min-width: 72px; text-align: right; color: var(--text-secondary); flex: none; }
+
 /* ── 패널 하단 리뷰 도구 (렌즈 + 데모 스위치, 스펙 §7·§8-4) ── */
 .insp-tools {
   flex: none;

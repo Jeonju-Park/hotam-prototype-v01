@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { useApp } from '../../App.jsx'
-import { fieldLabel } from '../../lib/useIaLive.js'
+import { fieldLabel, mapAuthor } from '../../lib/useIaLive.js'
 
 // 히스토리 탭 — ia_change_log 최신순: "7/12 14:02 대표 · HTM-S5-02 · 마일스톤: M2→M1"
 const fmtTime = (iso) => {
@@ -28,7 +28,7 @@ export default function HistoryTab({ onJump }) {
         </select>
         <select className="ia-ms-select" value={authorFilter} onChange={(e) => setAuthorFilter(e.target.value)}>
           <option value="">전체 작성자</option>
-          {authors.map((a) => <option key={a} value={a}>{a}</option>)}
+          {authors.map((a) => <option key={a} value={a}>{mapAuthor(a)}</option>)}
         </select>
         <span className="spacer" />
         <span className="t-micro" style={{ color: 'var(--text-tertiary)' }}>{rows.length}건</span>
@@ -36,7 +36,7 @@ export default function HistoryTab({ onJump }) {
       {rows.map((c) => (
         <div className="ia-stream-row is-log" key={c.id}>
           <span className="t-micro" style={{ color: 'var(--text-tertiary)' }}>{fmtTime(c.created_at)}</span>
-          <b className="t-caption">{c.author}</b>
+          <b className="t-caption">{mapAuthor(c.author)}</b>
           <button className="ia-id-chip t-micro" onClick={() => onJump(c.target_id)}>{c.target_id}</button>
           <span className="t-caption">
             {fieldLabel(c.field)}: {c.old_value ?? ''}→{c.new_value ?? ''}

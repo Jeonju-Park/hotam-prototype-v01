@@ -1,11 +1,7 @@
-// ─────────────────────────────────────────────
-// 호탐 IA 인스펙터 데이터 (자동 생성)
-// 원본: 20_work/ia/ia_hotam_전체.xlsx v0.1 · 2026-07-10
-// 이 파일을 수정하고 저장하면 프로토타입 인스펙터에 즉시 반영됩니다.
-// IA(xlsx)를 바꾼 뒤에는 이 파일의 해당 항목도 함께 고쳐 동기화를 유지하세요.
-// 필드: purpose=목적·기능 설명 / nav=진입→연결 / importance=중요도 / flags=이슈·변경 색인 / note=비고 / copy=UX 카피 노트
-// ─────────────────────────────────────────────
-export const IA_META = { version: "0.1", updated: "2026-07-10", source: "ia_hotam_전체.xlsx" };
+// 호탐 IA 인스펙터/시드 데이터 v2.1 (자동 생성)
+// 원본: 정주 수정본 ia_hotam_전체.xlsx (IA v0.1.1 · 2026-07-11) — 61행 텍스트 수정 반영
+// 용도: ①Supabase 동기화 스크립트의 입력 ②오프라인 폴백. 직접 수정 후엔 동기화 스크립트 재실행.
+export const IA_META = { version: "0.1.1", updated: "2026-07-11", source: "ia_hotam_전체.xlsx(정주 수정본)" };
 
 export const SCREENS = {
   "S13": {
@@ -28,7 +24,7 @@ export const SCREENS = {
     "type": "Page",
     "purpose": "로고+메인/서브 카피, 소셜·이메일 로그인 진입",
     "milestone": "M1",
-    "copy": "메인 카피: '맛집 하나 알려주면 안 잡아먹지' 계열(브랜드 캐논 화법) · 서브 카피 담백",
+    "copy": "메인 카피: '맛집 하나 알려주면 안 잡아먹지' 계열(브랜딩 완료 후 수정) · 서브 카피 담백",
     "flags": "",
     "note": ""
   },
@@ -52,7 +48,7 @@ export const SCREENS = {
     "type": "Page(Step)",
     "purpose": "순차 진행(이전/다음/건너뛰기). 취향 선택 완료 시 '시작하기'",
     "milestone": "M1",
-    "copy": "온보딩 = 위트 배분 구역(브랜드 캐논)",
+    "copy": "온보딩 = 브랜딩 요소 노출하며 귀엽게",
     "flags": "",
     "note": ""
   },
@@ -62,11 +58,11 @@ export const SCREENS = {
     "name": "바텀 내비게이션",
     "label": "홈/탐색/기록/랭킹/프로필",
     "type": "Tab",
-    "purpose": "5탭 고정(캐논 v1 불변). 가운데 ＋기록",
+    "purpose": "5탭 고정. 가운데 ＋기록",
     "milestone": "M1",
     "copy": "",
     "flags": "C-02",
-    "note": "캐논 명칭 '검색/리더보드' → '탐색/랭킹' 레이블 채택"
+    "note": ""
   },
   "S7": {
     "id": "S7",
@@ -76,7 +72,7 @@ export const SCREENS = {
     "type": "Page(Tab)",
     "purpose": "팔로우 중인 미식가들의 기록 피드(MVP는 팔로잉만)",
     "milestone": "M1",
-    "copy": "빈 피드(팔로우 0): 위트 카피 + 전체 평판 graceful degrade(캐논)",
+    "copy": "빈 피드(팔로우 0): 위트 카피 + 전체 평판",
     "flags": "",
     "note": ""
   },
@@ -86,9 +82,9 @@ export const SCREENS = {
     "name": "통합검색",
     "label": "검색",
     "type": "Page",
-    "purpose": "미식가+식당 통합검색. 탐색 탭과 컴포넌트 공유(캐논 4체계-검색)",
+    "purpose": "미식가+식당 통합검색. 탐색 탭과 컴포넌트 공유",
     "milestone": "M1",
-    "copy": "placeholder 로테이션 운영(브랜드형/스코프형/공감형) — 문구별 전환 데이터 수집(브랜드 캐논)",
+    "copy": "placeholder 로테이션 운영(브랜드형/스코프형/공감형) — 문구별 전환 데이터 수집",
     "flags": "C-05 · C-13",
     "note": ""
   },
@@ -158,7 +154,7 @@ export const SCREENS = {
     "name": "식당 상세",
     "label": "(식당명)",
     "type": "Page",
-    "purpose": "신뢰 위계 기반 식당 정보 — 친구 평점 > 전체 평점 순 노출(캐논)",
+    "purpose": "신뢰 위계 기반 식당 정보 — 친구 평점 > 전체 평점 순 노출",
     "milestone": "M1",
     "copy": "",
     "flags": "",
@@ -210,7 +206,7 @@ export const SCREENS = {
     "milestone": "M2",
     "copy": "",
     "flags": "C-06",
-    "note": "캐논 MVP 화면이나 개발 리소스 고려 M2 제안 — 대표 확인"
+    "note": "MVP 화면이나 개발 리소스 고려 M2 제안 — 대표 확인"
   },
   "S11": {
     "id": "S11",
@@ -246,7 +242,7 @@ export const SCREENS = {
     "milestone": "Later",
     "copy": "",
     "flags": "",
-    "note": "가설 검증 통과 → 대표 보고 경로로만(캐논 Out of Scope 절차)"
+    "note": "가설 검증 통과 → 대표 보고 경로로만(MVP 제작 이후)"
   },
   "S10": {
     "id": "S10",
@@ -314,11 +310,11 @@ export const SCREENS = {
     "name": "나의 맛집 지도",
     "label": "내 지도",
     "type": "Page",
-    "purpose": "가본 곳+찜 정적 핀 지도(캐논 S6)",
+    "purpose": "가본 곳+찜 정적 핀 지도",
     "milestone": "M3",
     "copy": "",
     "flags": "C-07",
-    "note": "캐논 MVP 화면이나 메모 중요도 하 → M3 제안. [전체 지도 토글] 여부 미정"
+    "note": "[전체 지도 토글] 여부 미정"
   },
   "S20": {
     "id": "S20",
@@ -346,7 +342,7 @@ export const FEATURES = {
     "milestone": "M1",
     "importance": "핵심",
     "nav": "",
-    "copy": "카피 미사용(브랜드 캐논: 화면당 탐이 1회)",
+    "copy": "카피 미사용/애니메이션 적용 가능성",
     "flags": "",
     "note": ""
   },
@@ -360,7 +356,7 @@ export const FEATURES = {
     "purpose": "로그인 기록 있으면 세션 확인 후 홈(S7) 직행",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S7 / 실패 시 → A0",
+    "nav": "→ S7(홈) / 실패 시 → A0",
     "copy": "",
     "flags": "",
     "note": ""
@@ -408,7 +404,7 @@ export const FEATURES = {
     "nav": "",
     "copy": "",
     "flags": "C-01",
-    "note": "메모에 누락 → 캐논 근거로 추가"
+    "note": ""
   },
   "HTM-A0-04": {
     "screen": "A0",
@@ -423,7 +419,7 @@ export const FEATURES = {
     "nav": "",
     "copy": "",
     "flags": "C-10",
-    "note": "캐논 A0(소셜 3종)에 없던 수단 — 메모 채택"
+    "note": ""
   },
   "HTM-A0-05": {
     "screen": "A0",
@@ -432,10 +428,10 @@ export const FEATURES = {
     "name": "이메일 회원가입 진입",
     "label": "",
     "type": "",
-    "purpose": "S14로 이동",
+    "purpose": "S14(이메일 회원가입)로 이동",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S14",
+    "nav": "→ S14(이메일 회원가입)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -492,13 +488,13 @@ export const FEATURES = {
     "name": "약관 동의",
     "label": "",
     "type": "Step4",
-    "purpose": "필수/선택 약관 동의 → 가입 완료 → S1",
+    "purpose": "필수/선택 약관 동의 → 가입 완료 → S1(온보딩)",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S1",
+    "nav": "→ S1(온보딩)",
     "copy": "",
     "flags": "",
-    "note": ""
+    "note": "가입 완료 추가 필요"
   },
   "HTM-S1-01": {
     "screen": "S1",
@@ -513,7 +509,7 @@ export const FEATURES = {
     "nav": "",
     "copy": "",
     "flags": "",
-    "note": "메모 [] 요소"
+    "note": "부가 요소"
   },
   "HTM-S1-02": {
     "screen": "S1",
@@ -528,7 +524,7 @@ export const FEATURES = {
     "nav": "",
     "copy": "",
     "flags": "",
-    "note": "메모 [] 요소"
+    "note": "부가 요소"
   },
   "HTM-S1-03": {
     "screen": "S1",
@@ -543,7 +539,7 @@ export const FEATURES = {
     "nav": "",
     "copy": "",
     "flags": "C-08 · O14",
-    "note": "메모 지시로 추가. 추천 지역 기반 여부 미정"
+    "note": "가본 식당 추천 위해 필요할듯 하여 추가"
   },
   "HTM-S1-04": {
     "screen": "S1",
@@ -567,13 +563,13 @@ export const FEATURES = {
     "name": "가본 식당 추가 권고",
     "label": "",
     "type": "Step",
-    "purpose": "건너뛴 식당 多 시 직접 추가 유도",
+    "purpose": "건너뛴 식당 많을 시 직접 추가 유도",
     "milestone": "M2",
     "importance": "하",
-    "nav": "→ S18",
+    "nav": "→ S18(식당추가)",
     "copy": "",
     "flags": "",
-    "note": "메모 [] 요소"
+    "note": "부가 요소"
   },
   "HTM-S1-06": {
     "screen": "S1",
@@ -585,7 +581,7 @@ export const FEATURES = {
     "purpose": "취향 선택 완료 시 활성화 → 홈 진입",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S7",
+    "nav": "→ S7 (홈)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -612,10 +608,10 @@ export const FEATURES = {
     "name": "앱바 — 팔로우 추천 진입",
     "label": "",
     "type": "",
-    "purpose": "S16으로 이동",
+    "purpose": "S16(팔로우 추천)으로 이동",
     "milestone": "M2",
     "importance": "핵심",
-    "nav": "→ S16",
+    "nav": "→ S16(팔로우 추천)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -627,10 +623,10 @@ export const FEATURES = {
     "name": "앱바 — 알림 진입",
     "label": "",
     "type": "",
-    "purpose": "종 아이콘 → S12 (캐논: 헤더 종, 탭 아님)",
+    "purpose": "종 아이콘 → S12(알림)",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S12",
+    "nav": "→ S12(알림)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -642,10 +638,10 @@ export const FEATURES = {
     "name": "앱바 — 검색 진입",
     "label": "",
     "type": "",
-    "purpose": "통합검색 S15로 이동",
+    "purpose": "통합검색 S15(통합검색)로 이동",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S15",
+    "nav": "→ S15(통합검색)",
     "copy": "",
     "flags": "C-13",
     "note": ""
@@ -657,7 +653,7 @@ export const FEATURES = {
     "name": "팔로잉 피드",
     "label": "",
     "type": "",
-    "purpose": "팔로우 중인 사람들의 기록만 최신순",
+    "purpose": "팔로우 중인 사람들의 기록만, 최신순",
     "milestone": "M1",
     "importance": "핵심",
     "nav": "",
@@ -705,7 +701,7 @@ export const FEATURES = {
     "purpose": "프로필 이미지·닉네임·작성 시간, 터치 시 작성자 프로필",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S10(타인)",
+    "nav": "→ S10(타인 프로필 메인)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -723,7 +719,7 @@ export const FEATURES = {
     "nav": "",
     "copy": "",
     "flags": "",
-    "note": "점수 직접 수정 UI 금지(캐논)"
+    "note": "점수 직접 수정 UI 금지"
   },
   "HTM-S7-10": {
     "screen": "S7",
@@ -735,10 +731,10 @@ export const FEATURES = {
     "purpose": "게시글 본문, 터치 시 게시물 상세",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S17",
+    "nav": "→ S17(게시물 상세)",
     "copy": "",
     "flags": "",
-    "note": ""
+    "note": "게시물 상세로 갈지 인스타 형식으로 갈지 고민 필요"
   },
   "HTM-S7-11": {
     "screen": "S7",
@@ -750,7 +746,7 @@ export const FEATURES = {
     "purpose": "터치 시 식당 상세",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S4",
+    "nav": "→ S4(식당 상세)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -798,7 +794,7 @@ export const FEATURES = {
     "nav": "",
     "copy": "",
     "flags": "",
-    "note": ""
+    "note": "이런 식으로 바텀시트로도 상세 표현 가능"
   },
   "HTM-S7-15": {
     "screen": "S7",
@@ -813,7 +809,7 @@ export const FEATURES = {
     "nav": "",
     "copy": "",
     "flags": "C-12 · O11",
-    "note": "캐논 'S7 소셜 범위 팀 결정 대기' — M2 배치로 정합"
+    "note": ""
   },
   "HTM-S7-16": {
     "screen": "S7",
@@ -870,7 +866,7 @@ export const FEATURES = {
     "purpose": "리스트형 결과, 터치 시 식당 상세",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S4",
+    "nav": "→ S4(식당 상세)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -885,7 +881,7 @@ export const FEATURES = {
     "purpose": "닉네임·아이디로 미식가 검색",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S10(타인)",
+    "nav": "→ S10(타인 프로필 메인)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1002,7 +998,7 @@ export const FEATURES = {
     "name": "팔로우 실행",
     "label": "",
     "type": "",
-    "purpose": "follow_add. 자동 친구추가·강제초대 금지(캐논)",
+    "purpose": "follow_add. 자동 친구추가·강제초대 금지 예정",
     "milestone": "M2",
     "importance": "핵심",
     "nav": "",
@@ -1110,7 +1106,7 @@ export const FEATURES = {
     "purpose": "해당 식당 요약 카드·이 식당을 좋아하는 사람들",
     "milestone": "M3",
     "importance": "하",
-    "nav": "→ S4",
+    "nav": "→ S4(식당 상세)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1122,10 +1118,10 @@ export const FEATURES = {
     "name": "검색 진입",
     "label": "",
     "type": "",
-    "purpose": "S15 재사용(식당 탭 기본). 뒤로가기 시 탐색 복귀",
+    "purpose": "S15(통합검색) 재사용(식당 탭 기본). 뒤로가기 시 탐색 복귀",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S15",
+    "nav": "→ S15(통합검색)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1155,7 +1151,7 @@ export const FEATURES = {
     "purpose": "지도 표시, 핀 터치 시 식당 상세, 확대/축소",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S4",
+    "nav": "→ S4(식당 상세)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1188,7 +1184,7 @@ export const FEATURES = {
     "nav": "",
     "copy": "",
     "flags": "",
-    "note": ""
+    "note": "형식은 네이버지도 참고"
   },
   "HTM-S9-06": {
     "screen": "S9",
@@ -1215,7 +1211,7 @@ export const FEATURES = {
     "purpose": "사진·식당명·위치·분류·전체 평점(방문자 평균). 터치 시 상세",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S4",
+    "nav": "→ S4(식당 상세)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1260,7 +1256,7 @@ export const FEATURES = {
     "purpose": "목록에 없는 식당 추가 — 캐논 MVP 핵심",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S18",
+    "nav": "→ S18(식당 추가)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1305,7 +1301,7 @@ export const FEATURES = {
     "purpose": "평균 표시 + 버튼 → 친구 평점 리스트(서브 페이지)",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S4 서브",
+    "nav": "→ S4(식당 상세) 서브",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1350,7 +1346,7 @@ export const FEATURES = {
     "purpose": "기록 본문이 리뷰로 변환 표시",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S17",
+    "nav": "→ S17(게시물 상세)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1437,7 +1433,7 @@ export const FEATURES = {
     "name": "가게 선택 — 검색",
     "label": "",
     "type": "",
-    "purpose": "식당 검색 → 결과에서 선택(S15 컴포넌트 공유)",
+    "purpose": "식당 검색 → 결과에서 선택(S15(통합검색) 컴포넌트 공유)",
     "milestone": "M1",
     "importance": "핵심",
     "nav": "",
@@ -1467,10 +1463,10 @@ export const FEATURES = {
     "name": "가게 선택 — 없는 식당 추가",
     "label": "",
     "type": "",
-    "purpose": "S18 재사용",
+    "purpose": "S18(식당 추가) 재사용",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S18",
+    "nav": "→ S18(식당 추가)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1482,7 +1478,7 @@ export const FEATURES = {
     "name": "만족도 선택(수준 택1)",
     "label": "",
     "type": "",
-    "purpose": "좋았어요/그저그래요/별로였어요 — 캐논 기존 기능ID",
+    "purpose": "좋았어요/그저그래요/별로였어요",
     "milestone": "M1",
     "importance": "핵심",
     "nav": "",
@@ -1602,10 +1598,10 @@ export const FEATURES = {
     "name": "내 리스트 보기",
     "label": "",
     "type": "",
-    "purpose": "S5로 이동",
+    "purpose": "S5(내 리스트)로 이동",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S5",
+    "nav": "→ S5(내 리스트)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1632,10 +1628,10 @@ export const FEATURES = {
     "name": "계속 기록",
     "label": "",
     "type": "",
-    "purpose": "S2 재진입",
+    "purpose": "S2(기록 작성) 재진입",
     "milestone": "M2",
     "importance": "하",
-    "nav": "→ S2",
+    "nav": "→ S2(기록 작성)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1740,7 +1736,7 @@ export const FEATURES = {
     "purpose": "프로필·닉네임·평가 수, 터치 시 프로필. 내 위치 하이라이트(하위권이면 '…' 아래 표시)",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S10(타인)",
+    "nav": "→ S10(타인 프로필 메인)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1767,10 +1763,10 @@ export const FEATURES = {
     "name": "필터·리스트",
     "label": "",
     "type": "",
-    "purpose": "기간/지역/카테고리 필터, 가게 사진·가게명·평균 점수·위치·카테고리·리뷰 수 → S4",
+    "purpose": "기간/지역/카테고리 필터, 가게 사진·가게명·평균 점수·위치·카테고리·리뷰 수 → S4(식당 상세)",
     "milestone": "M3",
     "importance": "하",
-    "nav": "→ S4",
+    "nav": "→ S4(식당 상세)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1797,10 +1793,10 @@ export const FEATURES = {
     "name": "설정 진입",
     "label": "",
     "type": "",
-    "purpose": "앱바 설정 아이콘 → S20",
+    "purpose": "앱바 설정 아이콘 → S20(설정)",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S20",
+    "nav": "→ S20(설정)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1815,7 +1811,7 @@ export const FEATURES = {
     "purpose": "사진·닉네임·[인증]·한줄 소개·팔로워/팔로잉 수(터치 시 리스트)",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S21",
+    "nav": "→ S21(팔로워/팔로잉)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1830,7 +1826,7 @@ export const FEATURES = {
     "purpose": "S5로 이동",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S5",
+    "nav": "→ S5(내 리스트)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1860,10 +1856,10 @@ export const FEATURES = {
     "purpose": "평가 분포·카테고리/가격대 취향 리포트. 공유 필수(메모)",
     "milestone": "M3",
     "importance": "하",
-    "nav": "→ S8",
+    "nav": "→ S8(공유 카드)",
     "copy": "",
     "flags": "",
-    "note": "캐논 S10 구성요소이나 메모 [] — M3"
+    "note": ""
   },
   "HTM-S21-01": {
     "screen": "S21",
@@ -1887,10 +1883,10 @@ export const FEATURES = {
     "name": "등급 섹션·리스트",
     "label": "",
     "type": "",
-    "purpose": "가게 사진·가게명·점수·위치·카테고리·[리뷰 수] → S4",
+    "purpose": "가게 사진·가게명·점수·위치·카테고리·[리뷰 수] → S4(식당 상세)",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S4",
+    "nav": "→ S4(식당 상세)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1902,7 +1898,7 @@ export const FEATURES = {
     "name": "순위 이의 — 드래그 재정렬",
     "label": "",
     "type": "",
-    "purpose": "'순위가 마음에 안들어요' → 드래그&드롭 재정렬. 반드시 비교 이벤트로 환원해 Elo 재계산(직접 수정 금지 — 캐논)",
+    "purpose": "순위가 마음에 안들어요' → 드래그&드롭 재정렬. 반드시 비교 이벤트로 환원해 Elo 재계산(직접 수정 금지)",
     "milestone": "M2",
     "importance": "핵심",
     "nav": "",
@@ -1932,10 +1928,10 @@ export const FEATURES = {
     "name": "리스트 공유",
     "label": "",
     "type": "",
-    "purpose": "나의 식당 랭킹 공유 → S8 카드",
+    "purpose": "나의 식당 랭킹 공유 → S8(공유 카드) 카드",
     "milestone": "M2",
     "importance": "하",
-    "nav": "→ S8",
+    "nav": "→ S8(공유 카드)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1950,7 +1946,7 @@ export const FEATURES = {
     "purpose": "터치 시 크게 보기 or 게시물 상세(S17 구현 시)",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S17",
+    "nav": "→ S17(게시물 상세)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1965,7 +1961,7 @@ export const FEATURES = {
     "purpose": "저장물 리스트 → 원본 이동",
     "milestone": "M1",
     "importance": "핵심",
-    "nav": "→ S17/S4",
+    "nav": "→ S17(게시물 상세)/S4(식당 상세)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -1992,10 +1988,10 @@ export const FEATURES = {
     "name": "핀 지도·공유",
     "label": "",
     "type": "",
-    "purpose": "핀 표시 + 내 지도 공유(→ S8)",
+    "purpose": "핀 표시 + 내 지도 공유(→ S8(공유 카드))",
     "milestone": "M3",
     "importance": "하",
-    "nav": "→ S8",
+    "nav": "→ S8(공유 카드)",
     "copy": "",
     "flags": "",
     "note": ""
@@ -2121,3 +2117,63 @@ export const FEATURES = {
     "note": ""
   }
 };
+
+// 오픈이슈 → 메모 시딩용 (tag: '이슈')
+export const OPEN_ISSUES = [
+  {
+    "id": "O9",
+    "body": "⚠️ 교차 만족도(밴드) 비교 추천 허용 여부 —  '같은 밴드 내 비교'  vs 다른 밴드에도 가능할지",
+    "owner": "대표",
+    "targets": "S3 / 점수 엔진",
+    "note": "허용 시 product_canon §3 개정 + Elo 규칙 재설계"
+  },
+  {
+    "id": "O10",
+    "body": "기록 시 사진 필수 여부 — 필수면 카메라 우선 UI + 프로필 SNS형, 아니면 일반 작성형",
+    "owner": "대표",
+    "targets": "S2 / S10",
+    "note": "기록 마찰 최소화(NSM) 관점에선 비필수 우세 [추정]"
+  },
+  {
+    "id": "O11",
+    "body": "게시물 상세를 별도 페이지(S17)로 만들지, 피드 위 바텀시트로 갈지",
+    "owner": "대표",
+    "targets": "S7 / S17",
+    "note": "ERD Post↔Record 결정과 연동"
+  },
+  {
+    "id": "O12",
+    "body": "재방문 기록 시 이전 평가 노출 여부(앵커링 vs 편의)",
+    "owner": "팀",
+    "targets": "S2",
+    "note": "비교 편향 우려 — 데이터로 검증 권장"
+  },
+  {
+    "id": "O13",
+    "body": "내 리스트 순위 이의 방식 — 드래그 재정렬(비교 이벤트 환원) vs 재평가 진행",
+    "owner": "대표",
+    "targets": "S5",
+    "note": "어느 쪽이든 점수 직접 수정 금지(캐논)"
+  },
+  {
+    "id": "O14",
+    "body": "온보딩 취향 선택·추천을 지역 기반으로 할지 + 지역 선택 Step 시점",
+    "owner": "팀",
+    "targets": "S1 / S11 동네 탭",
+    "note": "M2 배치 전 결정"
+  },
+  {
+    "id": "O15",
+    "body": "알림 종류 정의(M1 최소 세트: 팔로우·좋아요 제안)",
+    "owner": "팀",
+    "targets": "S12",
+    "note": ""
+  },
+  {
+    "id": "O16",
+    "body": "팔로우 추천 알고리즘(연락처 제외 — 자동 친구추가 금지 캐논)",
+    "owner": "팀",
+    "targets": "S16",
+    "note": ""
+  }
+];

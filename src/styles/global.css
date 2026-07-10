@@ -35,16 +35,17 @@ input, textarea { font: inherit; }
 .shell {
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: stretch;              /* IA 패널은 세로 fill */
   justify-content: center;
-  gap: 32px;
-  padding: 24px;
+  gap: 40px;
+  padding: 48px clamp(80px, 8vw, 120px); /* 데스크톱 좌우 여백 80~120 */
 }
 
 .frame {
   width: 390px;
   height: 844px;
   flex: none;
+  align-self: center;               /* 프로토타입 프레임은 크기 고정·세로 중앙 */
   background: var(--bg-default);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-lg);
@@ -233,10 +234,14 @@ input, textarea { font: inherit; }
 .ms-badge.m3 { color: var(--text-on-button); background: var(--grade-bad); }
 .ms-badge.later { color: var(--text-tertiary); border: 1px dashed var(--border-default); }
 
-/* ── 라이브 IA 테이블 패널 (스펙 v2 §3) — 폭 480, <1280px 축소 ── */
-.ia-panel { width: 480px; }
-@media (max-width: 1279px) {
-  .ia-panel { width: 360px; }
+/* ── 라이브 IA 테이블 패널 (스펙 v2 §3) — 가로·세로 fill (프레임 제외 잔여 공간 전부) ── */
+.ia-panel {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 360px;
+  height: calc(100vh - 96px);        /* 세로 fill: 뷰포트 − 상하 패딩(48×2) */
+  min-height: 844px;                 /* 프레임보다 짧아지지 않게 */
+  align-self: center;
 }
 
 .ia-conn-dot {
@@ -348,8 +353,8 @@ input, textarea { font: inherit; }
 
 .ia-row {
   display: grid;
-  grid-template-columns: 88px 1fr 76px 48px 80px;
-  gap: 6px;
+  grid-template-columns: 92px 1.2fr 80px 64px 1fr; /* 넓은 패널: 명칭·메모가 남는 폭 분배 */
+  gap: 8px;
   align-items: center;
   min-height: 34px;
   padding: 2px var(--sp-sm);
@@ -357,6 +362,8 @@ input, textarea { font: inherit; }
   border-left: 2px solid transparent;
 }
 @media (max-width: 1279px) {
+  .shell { padding: 24px; gap: 24px; } /* 좁은 화면: 여백 축소 */
+  .ia-panel { height: calc(100vh - 48px); }
   .ia-row { grid-template-columns: 84px 1fr 72px; }
   .ia-row > :nth-child(4), .ia-row > :nth-child(5) { display: none; }
 }

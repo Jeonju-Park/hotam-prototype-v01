@@ -1,0 +1,17 @@
+/* 디자인 토큰 — 캐논 v1.5 (스펙 §2 그대로. 이 값 외 임의 색 금지) */
+:root{
+  /* color */
+  --bg-default:#F0F4F5; --bg-surface:#FFFFFF; --bg-disabled:#E3E8EA;
+  --text-primary:#0E0E0E; --text-secondary:#5C6467; --text-tertiary:#8B9498;
+  --text-brand:#C75F02; /* 점수 숫자 전용(orange-700) */ --text-on-button:#FFFFFF;
+  --main-primary:#FE7902; --main-secondary:#26422A; --main-tertiary:#42302D;
+  --border-default:#D7DEE0; --border-focus:#FE7902;
+  --grade-good:#FE7902; --grade-good-bg:#FFF1E5;
+  --grade-soso:#26422A; --grade-soso-bg:#EAF0EB;
+  --grade-bad:#6B7478;  --grade-bad-bg:#EEF1F2;
+  --status-success:#2E7D46; --status-danger:#C62828; --status-info:#1565C0;
+  --overlay-scrim:rgba(14,14,14,.6); --shadow-sm:0 1px 8px rgba(14,14,14,.08); --shadow-lg:0 4px 16px rgba(14,14,14,.12);
+  /* layout */
+  --sp-xxs:4px; --sp-xs:8px; --sp-sm:12px; --sp-md:16px; --sp-lg:24px; --sp-xl:32px; --sp-page:20px;
+  --r-sm:4px; --r-md:8px; --r-lg:12px; /* 12 초과·pill 금지(원형 아바타 제외) */
+}

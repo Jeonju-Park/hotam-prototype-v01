@@ -1,0 +1,16 @@
+# 의존성·빌드 산출물
+node_modules/
+dist/
+
+# macOS
+.DS_Store
+
+# 로그·환경 변수
+*.log
+npm-debug.log*
+.env
+.env.*
+
+# 에디터
+.vscode/
+.idea/

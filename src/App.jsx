@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import BottomNav from './components/BottomNav.jsx'
-import InspectorPanel from './components/InspectorPanel.jsx'
+import IaPanel from './components/ia/IaPanel.jsx'
+import useIaLive from './lib/useIaLive.js'
 import UnderConstruction from './screens/UnderConstruction.jsx'
 import S13Splash from './screens/S13Splash.jsx'
 import A0Login from './screens/A0Login.jsx'
@@ -192,15 +193,17 @@ export default function App() {
     return () => clearTimeout(t)
   }, [toast])
 
-  // ── 인스펙터 상태 (호버 기능ID · 고정 스냅샷 · 역하이라이트) ──
+  // ── IA 패널 상태 (호버 기능ID · 역하이라이트) — 고정은 v2에서 행 클릭 선택으로 대체 ──
   const [hoveredFuncId, setHoveredFuncId] = useState(null)
   const [reverseFuncId, setReverseFuncId] = useState(null)
-  const [pinnedContent, setPinnedContent] = useState(null)
 
   // ── 마일스톤 렌즈 + 데모 스위치 (스펙 §7) ──
   const [lens, setLens] = useState('M3')
   const [demoEmpty, setDemoEmpty] = useState(false)
   const [demoError, setDemoError] = useState(false)
+
+  // ── 라이브 IA (v2 §1): Supabase + Realtime, 실패 시 정적 폴백 ──
+  const iaLive = useIaLive(showToast)
 
   // ── 기능 호버 → 하이라이트 + 인스펙터 연동 (스펙 §8-1) ──
   const frameRef = useRef(null)
@@ -262,15 +265,15 @@ export default function App() {
     showToast,
     hoveredFuncId, setHoveredFuncId,
     reverseFuncId, setReverseFuncId,
-    pinnedContent, setPinnedContent,
     lens, setLens,
     demoEmpty, setDemoEmpty,
     demoError, setDemoError,
+    ...iaLive,
   }), [currentScreen, params, navigate, goBack, history.length, feedPosts, myListData,
        likedPostIds, toggleLike, savedPostIds, toggleSave, followedUserIds, toggleFollow,
        wishedRestaurantIds, toggleWish,
        draft, lastRecord, finalizeRecord, updateRecordScore, reorderMyList, showToast,
-       hoveredFuncId, reverseFuncId, pinnedContent, lens, demoEmpty, demoError])
+       hoveredFuncId, reverseFuncId, lens, demoEmpty, demoError, iaLive])
 
   const Screen = SCREEN_COMPONENTS[currentScreen] ?? UnderConstruction
   const showNav = !NO_NAV_SCREENS.includes(currentScreen)
@@ -288,7 +291,7 @@ export default function App() {
             <div className="toast t-caption" key={toast.key}>{toast.msg}</div>
           )}
         </div>
-        <InspectorPanel />
+        <IaPanel />
       </div>
     </AppContext.Provider>
   )

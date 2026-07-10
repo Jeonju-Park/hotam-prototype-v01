@@ -148,10 +148,14 @@ export default function useIaLive(showToast) {
     return {}
   }, [live, features, logChange])
 
-  // ── 기능 추가 (HTM 형식 검증·중복 차단은 호출부에서 1차, 여기서 2차) ──
-  const addFeature = useCallback(async (id, name, screenId) => {
+  // ── 기능 추가 — HTM-S#-## 형식 + 화면 접두사 실존 검증 + 중복 차단.
+  //    화면은 ID 접두사에서 유도(다른 화면을 보며 추가해도 올바른 화면에 귀속) ──
+  const addFeature = useCallback(async (id, name) => {
     if (!live) return { error: '오프라인 — 읽기 전용이에요' }
-    if (!/^HTM-(A0|S\d{1,2})-\d{2}$/.test(id)) return { error: '형식: HTM-S#-## (예 HTM-S7-18)' }
+    const m = /^HTM-(A0|S\d{1,2})-\d{2}$/.exec(id)
+    if (!m) return { error: '형식: HTM-S#-## (예 HTM-S7-18)' }
+    const screenId = m[1]
+    if (!screens[screenId]) return { error: `등록되지 않은 화면이에요 (${screenId}) — 캐논에 화면 먼저 등록` }
     if (features[id]) return { error: '이미 있는 기능ID예요' }
     const scr = screens[screenId]
     const row = {

@@ -68,7 +68,7 @@ export default function TableTab({ selectedId, setSelectedId }) {
   }
 
   const submitAdd = async () => {
-    const { error } = await addFeature(newId.trim(), newName.trim() || '(이름 없음)', currentScreen)
+    const { error } = await addFeature(newId.trim(), newName.trim() || '(이름 없음)')
     if (error) return showToast(error)
     setAdding(false); setNewId(''); setNewName('')
     setSelectedId(newId.trim())
